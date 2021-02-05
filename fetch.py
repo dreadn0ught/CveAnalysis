@@ -6,24 +6,34 @@ import xmltodict
 import json
 import os
 
+import logging
+
 class NVDFetch:
 
     @staticmethod
     def fetch_and_cache(cache, year=2020):
+
         cached_file = "{dir}{file}".format(
             dir = cache,
             file = NVDFetch.get_filename(year)
             )
 
         if os.path.isfile(cached_file):
+            logging.info("Fetching cached data from {} for {}".format(cache, year))
             with open(cached_file, "r") as f:
-                response_json = f.read()
+                response_json = json.load(f)
         else:
             response_json = NVDFetch.fetch(year)
+
+            with open(cached_file, "w") as f:
+                logging.info("Caching data for next time in {}".format(cached_file))
+                json.dump(response_json, f)
+
         return response_json
 
     @staticmethod
     def fetch(year=2020):
+        logging.info("Fetching CVE data for {}".format(year))
         # get from internet
         url = NVDFetch.get_url(year)
         response = urllib.request.urlopen(url)
@@ -59,7 +69,21 @@ class CWEFetch:
 
     @staticmethod
     def fetch_and_cache(cache):
-        response_json = CWEFetch.fetch()
+        cached_file = "{dir}{file}".format(
+            dir = cache,
+            file = CWEFetch.get_filename()
+            )
+
+        if os.path.isfile(cached_file):
+            logging.info("Fetching cached data from {} for CWEs".format(cache))
+            with open(cached_file, "r") as f:
+                response_json = json.load(f)
+        else:
+            response_json = CWEFetch.fetch()
+
+            with open(cached_file, "w") as f:
+                logging.info("Caching data for next time in {}".format(cached_file))
+                json.dump(response_json, f)
         return response_json
 
     @staticmethod

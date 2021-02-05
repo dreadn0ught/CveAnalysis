@@ -1,6 +1,8 @@
 '''
 Pulls down CWE relationship mapping and provides a way to query it
 '''
+import logging
+
 from fetch import CWEFetch
 
 
@@ -37,6 +39,7 @@ class CWE:
 
 
     def get_cwe_descendants(self, cwe_id):
+        logging.info("Getting descendants for {}".format(cwe_id))
 
         if not (cwe_id and self.get_cwe(cwe_id)) :
             return []
@@ -57,11 +60,12 @@ class CWE:
 # Wraps all calls to CWE and makes sure we add the CWE- string to them
 class NVDCWE:
     def __init__(self, cache=None):
+        logging.info("Running with NVD Wrapper")
         self.cwe = CWE(cache)
 
     @staticmethod
     def add(string):
-        if string.find("CWE-") == 0:
+        if string.find("CWE-") == -1:
             string = "CWE-{}".format(string)
 
         return string
@@ -79,9 +83,9 @@ class NVDCWE:
         return [self.add(cwe) for cwe in ret]
 
     def get_cwe_descendants(self, cwe_id):
-        ret = self.cwe.get_cwe_descendants(self.add(cwe_id))
+        ret = self.cwe.get_cwe_descendants(self.strip(cwe_id))
 
-        return [self.strip(cwe) for cwe in ret]
+        return [self.add(cwe) for cwe in ret]
 
 
 # TODO set something up to get categories too

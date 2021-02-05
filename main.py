@@ -1,11 +1,16 @@
 from tempfile import TemporaryDirectory
 from pprint import pprint
+import logging
 
 from cwe import NVDCWE
 from nvd import NVD
 
+logging.basicConfig(level = logging.INFO)
+
 tempfolder = "/tmp/nvd_cache/"
 
+
+logging.info("Pulling data")
 nvd = NVD(cache = tempfolder)
 cwe = NVDCWE(cache = tempfolder)
 
