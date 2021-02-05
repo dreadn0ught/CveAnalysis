@@ -4,21 +4,30 @@ import gzip
 from zipfile import ZipFile
 import xmltodict
 import json
-
+import os
 
 class NVDFetch:
+
     @staticmethod
-    def fetch(year=2020, location = None):
-        if location:
-            # Get from local file
-            response = open("{dir}{file}".format(
-                dir = location,
-                file = NVDFetch.get_filename(year)
-                ), 'rb')
+    def fetch_and_cache(cache, year=2020):
+        cached_file = "{dir}{file}".format(
+            dir = cache,
+            file = NVDFetch.get_filename(year)
+            )
+
+        if os.path.isfile(cached_file):
+            with open(cached_file, "r") as f:
+                response_json = f.read()
         else:
-            # get from internet
-            url = NVDFetch.get_url(year)
-            response = urllib.request.urlopen(url)
+            response_json = NVDFetch.fetch(year)
+        return response_json
+
+    @staticmethod
+    def fetch(year=2020):
+        # get from internet
+        url = NVDFetch.get_url(year)
+        response = urllib.request.urlopen(url)
+
         # Download CVE json.gz files
         compressed_file = io.BytesIO(response.read())
 
@@ -26,7 +35,11 @@ class NVDFetch:
         decompressed_file = gzip.GzipFile(fileobj=compressed_file)
 
         # Load JSON
-        return json.load(decompressed_file)
+        response_json = json.load(decompressed_file)
+
+        return response_json
+
+
 
     @staticmethod
     def get_filename(year=2020, version=1.1):
@@ -43,18 +56,17 @@ class NVDFetch:
 
 
 class CWEFetch:
+
     @staticmethod
-    def fetch(location = None):
-        if location:
-            # Get from local file
-            response = open("{dir}{file}".format(
-                dir = location,
-                file = CWEFetch.get_filename()
-                ), 'rb')
-        else:
-            # get from internet
-            url = CWEFetch.get_url()
-            response = urllib.request.urlopen(url)
+    def fetch_and_cache(cache):
+        response_json = CWEFetch.fetch()
+        return response_json
+
+    @staticmethod
+    def fetch():
+        # get from internet
+        url = CWEFetch.get_url()
+        response = urllib.request.urlopen(url)
 
         compressed_file = io.BytesIO(response.read())
 

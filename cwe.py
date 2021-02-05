@@ -5,8 +5,11 @@ from fetch import CWEFetch
 
 
 class CWE:
-    def __init__(self, location = None):
-        self.cwes = CWEFetch.fetch(location)
+    def __init__(self, cache = None):
+        if cache:
+            self.cwes = CWEFetch.fetch_and_cache(cache)
+        else:
+            self.cwes = CWEFetch.fetch()
 
 
     def cwe_list(self):
@@ -53,8 +56,8 @@ class CWE:
 
 # Wraps all calls to CWE and makes sure we add the CWE- string to them
 class NVDCWE:
-    def __init__(self, location=None):
-        self.cwe = CWE(location)
+    def __init__(self, cache=None):
+        self.cwe = CWE(cache)
 
     @staticmethod
     def add(string):

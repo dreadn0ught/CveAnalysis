@@ -7,7 +7,7 @@ def url_cwe():
 
 @pytest.fixture
 def cwe():
-    return CWE(location = "test/")
+    return CWE(cache = "test/")
 
 def test_cwe_loading_csv(cwe):
     assert cwe.cwes

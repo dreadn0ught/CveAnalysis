@@ -7,7 +7,7 @@ def url_nvd():
 
 @pytest.fixture
 def nvd():
-    return NVD([2021], location="test/")
+    return NVD([2021], cache="test/")
 
 def test_nvd_loading_json(nvd):
     assert len(nvd.cves) == 1
