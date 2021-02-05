@@ -19,4 +19,4 @@ buffer_overflows_cwe = cwe.get_cwe_descendants("CWE-119")
 pprint(buffer_overflows_cwe)
 buffer_overflows = nvd.search_cwes(buffer_overflows_cwe)
 
-pprint(buffer_overflows)
+print("There are {} buffer overflow CVEs".format(len(buffer_overflows)))
