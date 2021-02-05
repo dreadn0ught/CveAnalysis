@@ -21,6 +21,8 @@ class CVE:
 
         return filter(contains_cwe, self.cves['CVE_Items'])
 
+    def total_cves(self):
+        return len(self.cves['CVE_Items'])
 
 # TODO add logging methods in
 
@@ -53,3 +55,6 @@ class NVD:
             ret.extend(self.search_cwe(cwe))
 
         return ret
+
+    def total_cves(self):
+        return sum([cve.total_cves() for cve in self.cves])

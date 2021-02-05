@@ -36,3 +36,6 @@ def test_nvd_search_cwes(nvd):
     for (input, output) in test_cases:
         assert len(nvd.search_cwes(input)) == output
 
+
+def test_nvd_get_total(nvd):
+    assert nvd.total_cves() == 906
