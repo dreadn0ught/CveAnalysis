@@ -78,9 +78,9 @@ class NVDCWE:
         return string
 
     def get_cwe(self, cwe_id):
-        ret = self.cwe.get_cwe(self.strip(cwe_id))
+        return self.cwe.get_cwe(self.strip(cwe_id))
 
-        return [self.add(cwe) for cwe in ret]
+
 
     def get_cwe_descendants(self, cwe_id):
         ret = self.cwe.get_cwe_descendants(self.strip(cwe_id))
