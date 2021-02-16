@@ -7,11 +7,11 @@ from fetch import CWEFetch
 
 
 class CWE:
-    def __init__(self, cache = None):
+    def __init__(self, url, cache = None):
         if cache:
-            self.cwes = CWEFetch.fetch_and_cache(cache)
+            self.cwes = CWEFetch.fetch_and_cache(url, cache)
         else:
-            self.cwes = CWEFetch.fetch()
+            self.cwes = CWEFetch.fetch(url)
 
 
     def cwe_list(self):
@@ -59,9 +59,9 @@ class CWE:
 
 # Wraps all calls to CWE and makes sure we add the CWE- string to them
 class NVDCWE:
-    def __init__(self, cache=None):
+    def __init__(self, url, cache=None):
         logging.info("Running with NVD Wrapper")
-        self.cwe = CWE(cache)
+        self.cwe = CWE(url, cache)
 
     @staticmethod
     def add(string):

@@ -1,0 +1,7 @@
+{
+  "cache_folder": "/tmp/nvd_cache/",
+  "nvd_test_file": "./test/nvdcve-1.1-2021.json",
+  "cve_test_file": "cwec_latest.json",
+  "nvd_url": "https://nvd.nist.gov/feeds/json/cve/{version}/{filename}",
+  "cwe_url": "https://cwe.mitre.org/data/xml/{filename}"
+}

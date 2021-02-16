@@ -11,7 +11,7 @@ import logging
 class NVDFetch:
 
     @staticmethod
-    def fetch_and_cache(cache, year=2020):
+    def fetch_and_cache(url, cache, year=2020):
 
         cached_file = "{dir}{file}".format(
             dir = cache,
@@ -23,7 +23,7 @@ class NVDFetch:
             with open(cached_file, "r") as f:
                 response_json = json.load(f)
         else:
-            response_json = NVDFetch.fetch(year)
+            response_json = NVDFetch.fetch(url, year)
 
             with open(cached_file, "w") as f:
                 logging.info("Caching data for next time in {}".format(cached_file))
@@ -32,10 +32,10 @@ class NVDFetch:
         return response_json
 
     @staticmethod
-    def fetch(year=2020):
+    def fetch(url, year=2020):
         logging.info("Fetching CVE data for {}".format(year))
         # get from internet
-        url = NVDFetch.get_url(year)
+        url = NVDFetch.get_url(url, year)
         response = urllib.request.urlopen(url)
 
         # Download CVE json.gz files
@@ -57,8 +57,7 @@ class NVDFetch:
         return filename.format(version = version, year = year)
 
     @staticmethod
-    def get_url(year=2020, version=1.1):
-        url = "https://nvd.nist.gov/feeds/json/cve/{version}/{filename}"
+    def get_url(url, year=2020, version=1.1):
         filename = NVDFetch.get_filename(year, version)
 
         return url.format(year=year, version=version, filename=filename)
@@ -68,7 +67,7 @@ class NVDFetch:
 class CWEFetch:
 
     @staticmethod
-    def fetch_and_cache(cache):
+    def fetch_and_cache(url, cache):
         cached_file = "{dir}{file}".format(
             dir = cache,
             file = CWEFetch.get_filename()
@@ -79,7 +78,7 @@ class CWEFetch:
             with open(cached_file, "r") as f:
                 response_json = json.load(f)
         else:
-            response_json = CWEFetch.fetch()
+            response_json = CWEFetch.fetch(url)
 
             with open(cached_file, "w") as f:
                 logging.info("Caching data for next time in {}".format(cached_file))
@@ -87,9 +86,9 @@ class CWEFetch:
         return response_json
 
     @staticmethod
-    def fetch():
+    def fetch(url):
         # get from internet
-        url = CWEFetch.get_url()
+        url = CWEFetch.get_url(url)
         response = urllib.request.urlopen(url)
 
         compressed_file = io.BytesIO(response.read())
@@ -107,8 +106,7 @@ class CWEFetch:
         return "cwec_latest.xml.zip"
 
     @staticmethod
-    def get_url():
-        url = "https://cwe.mitre.org/data/xml/{filename}"
+    def get_url(url):
         filename = CWEFetch.get_filename()
 
         return url.format(filename=filename)
