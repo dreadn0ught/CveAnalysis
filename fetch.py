@@ -11,8 +11,18 @@ import logging
 class NVDFetch:
 
     @staticmethod
-    def fetch_and_cache(url, cache, year=2020):
+    def fetch(url=None, cache=None, year=2020):
 
+        if cache:
+            return NVDFetch._fetch_and_cache(url, cache, year)
+        elif url:
+            return NVDFetch._fetch(url, year)
+
+        else:
+            raise Exception("Error NVDFetch invalid inputs")
+
+
+    def _fetch_and_cache(url, cache, year=2020):
         cached_file = "{dir}{file}".format(
             dir = cache,
             file = NVDFetch.get_filename(year)
@@ -23,7 +33,7 @@ class NVDFetch:
             with open(cached_file, "r") as f:
                 response_json = json.load(f)
         else:
-            response_json = NVDFetch.fetch(url, year)
+            response_json = NVDFetch._fetch(url, year)
 
             with open(cached_file, "w") as f:
                 logging.info("Caching data for next time in {}".format(cached_file))
@@ -32,7 +42,11 @@ class NVDFetch:
         return response_json
 
     @staticmethod
-    def fetch(url, year=2020):
+    def _fetch(url, year=2020):
+        if not url:
+            raise Exception("Error missing valid URL for CVE data")
+
+
         logging.info("Fetching CVE data for {}".format(year))
         # get from internet
         url = NVDFetch.get_url(url, year)
@@ -67,7 +81,19 @@ class NVDFetch:
 class CWEFetch:
 
     @staticmethod
-    def fetch_and_cache(url, cache):
+    def fetch(url=None, cache=None):
+
+        if cache:
+            return CWEFetch._fetch_and_cache(url, cache)
+
+        elif url:
+            return CWEFetch._fetch(url)
+
+        else:
+            raise Exception("Error invalid CWEFetch inputs")
+
+    def _fetch_and_cache(url, cache):
+
         cached_file = "{dir}{file}".format(
             dir = cache,
             file = CWEFetch.get_filename()
@@ -78,7 +104,7 @@ class CWEFetch:
             with open(cached_file, "r") as f:
                 response_json = json.load(f)
         else:
-            response_json = CWEFetch.fetch(url)
+            response_json = CWEFetch._fetch(url)
 
             with open(cached_file, "w") as f:
                 logging.info("Caching data for next time in {}".format(cached_file))
@@ -86,7 +112,7 @@ class CWEFetch:
         return response_json
 
     @staticmethod
-    def fetch(url):
+    def _fetch(url):
         # get from internet
         url = CWEFetch.get_url(url)
         response = urllib.request.urlopen(url)

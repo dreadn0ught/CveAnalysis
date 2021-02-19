@@ -27,7 +27,7 @@ class CVE:
 # TODO add logging methods in
 
 class NVD:
-    def __init__(self, url, years = None, cache = None):
+    def __init__(self, url=None, years = None, cache = None):
 
         self.url = url
         self.cves = []
@@ -36,10 +36,7 @@ class NVD:
             years = range(2002, 2022)
 
         for year in years:
-            if cache:
-                response_json = NVDFetch.fetch_and_cache(self.url, cache, year)
-            else:
-                response_json = NVDFetch.fetch(self.url, year)
+            response_json = NVDFetch.fetch(self.url, cache, year)
 
             self.cves.append(CVE(response_json))
 
